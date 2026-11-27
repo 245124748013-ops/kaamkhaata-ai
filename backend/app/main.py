@@ -24,24 +24,28 @@ app = FastAPI(
 )
 
 # CORS configuration
+
 frontend_url = os.getenv("FRONTEND_URL", "").rstrip("/")
 
 allowed_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
+    "https://kaamkhaata-ai.vercel.app",
 ]
 
-if frontend_url:
+if frontend_url and frontend_url not in allowed_origins:
     allowed_origins.append(frontend_url)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https://kaamkhaata-[a-z0-9-]+-245124748013-ops-projects\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Register all API routers
 app.include_router(dashboard.router)
